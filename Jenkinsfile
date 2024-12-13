@@ -15,34 +15,38 @@ pipeline {
         
         stage('Clone Repository') {
             steps {
-                git branch: "${env.GIT_BRANCH}",
-                    url: "${env.GIT_REPO}",
-                    // credentialsId: 'github-token'  Replace with your Jenkins GitHub credentials ID
+                git branch: "${GIT_BRANCH}",
+                    url: "${GIT_REPO}"
+                    // Uncomment and replace with your Jenkins GitHub credentials ID if required:
+                    // credentialsId: 'github-token'
             }
         }
 
         stage('Build') {
             steps {
-                sh "${env.MAVEN_HOME}/bin/mvn clean install"
+                sh "${MAVEN_HOME}/bin/mvn clean install"
             }
         }
 
-         stage('Run Sonarqube') {
+        stage('Run SonarQube') {
             environment {
-                scannerHome = tool 'sonar-scanner';
+                scannerHome = tool name: 'sonar-scanner'  // Adjust 'sonar-scanner' to your Jenkins scanner installation name
             }
             steps {
-              withSonarQubeEnv(credentialsId: 'sonar-token', installationName: 'sonar-server') {
-                sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
-              }
+                withSonarQubeEnv('sonar-token') {  // Replace 'sonar-token' with your SonarQube credentials ID
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dproject.settings=sonar-project.properties
+                    """
+                }
             }
         }
 
         stage('Deploy App via Tomcat Manager') {
             steps {
                 sh """
-                curl -u ${TOMCAT_USER}:${TOMCAT_PASSWORD} -T target/your-app.war \
-                ${TOMCAT_URL}/deploy?path=/your-app&update=true
+                    curl -u ${TOMCAT_USER}:${TOMCAT_PASSWORD} -T target/your-app.war \
+                    ${TOMCAT_URL}/deploy?path=/your-app&update=true
                 """
             }
         }
@@ -51,7 +55,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'jfrog-settings-secret', variable: 'SETTINGS_FILE')]) {
                     sh """
-                        mvn deploy -s $SETTINGS_FILE
+                        ${MAVEN_HOME}/bin/mvn deploy -s $SETTINGS_FILE
                     """
                 }
             }
@@ -64,3 +68,4 @@ pipeline {
         }
     }
 }
+
