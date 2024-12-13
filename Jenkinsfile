@@ -9,6 +9,8 @@ pipeline {
         TOMCAT_USER = 'admin'
         TOMCAT_PASSWORD = 'abc123'
         CONTAINER_ID = 'tomcat' // Replace with your container ID or name
+        SONARQUBE_URL = 'http://localhost:9000' // Update with your SonarQube URL
+        SONARQUBE_TOKEN = credentials('sonar-token') // Jenkins credential ID for SonarQube token
     }
 
     stages {
@@ -28,16 +30,23 @@ pipeline {
             }
         }
 
-        stage('Run SonarQube') {
-            environment {
-                scannerHome = tool name: 'sonar-scanner'  // Adjust 'sonar-scanner' to your Jenkins scanner installation name
-            }
+        stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar-token') {  // Replace 'sonar-token' with your SonarQube credentials ID
+                withSonarQubeEnv('SonarQubeServer') { // Replace 'SonarQubeServer' with the name configured in Jenkins
                     sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dproject.settings=sonar-project.properties
+                    mvn sonar:sonar \
+                    -Dsonar.projectKey=my-app \
+                    -Dsonar.host.url=${SONARQUBE_URL} \
+                    -Dsonar.login=${SONARQUBE_TOKEN}
                     """
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
