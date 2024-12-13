@@ -7,7 +7,18 @@
   <version>1.0-SNAPSHOT</version>
   <name>java-web-app Maven Webapp</name>
   <url>http://maven.apache.org</url>
-  
+  <distributionManagement>
+    <repository>
+        <id>central</id>
+        <name>a0gmvfpojdmwy-artifactory-primary-0-releases</name>
+        <url>https://liliane.jfrog.io/artifactory/demo-app</url>
+    </repository>
+    <snapshotRepository>
+        <id>snapshots</id>
+        <name>a0gmvfpojdmwy-artifactory-primary-0-snapshots</name>
+        <url>https://liliane.jfrog.io/artifactory/demo-app</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <properties>
     <sonar.host.url>http://localhost:9000</sonar.host.url>
