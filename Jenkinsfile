@@ -17,7 +17,7 @@ pipeline {
             steps {
                 git branch: "${env.GIT_BRANCH}",
                     url: "${env.GIT_REPO}",
-                    // credentialsId: 'github-token'  // Replace with your Jenkins GitHub credentials ID
+                    // credentialsId: 'github-token'  Replace with your Jenkins GitHub credentials ID
             }
         }
 
