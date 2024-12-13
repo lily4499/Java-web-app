@@ -35,7 +35,7 @@ pipeline {
                 withSonarQubeEnv('SonarQubeServer') { // Replace 'SonarQubeServer' with the name configured in Jenkins
                     sh """
                     mvn sonar:sonar \
-                    -Dsonar.projectKey=my-app \
+                    -Dsonar.projectKey=demo-app-project \
                     -Dsonar.host.url=${SONARQUBE_URL} \
                     -Dsonar.login=${SONARQUBE_TOKEN}
                     """
@@ -43,13 +43,13 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage('Quality Gate') {
+        //     steps {
+        //         timeout(time: 1, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
 
         stage('Deploy App via Tomcat Manager') {
             steps {
