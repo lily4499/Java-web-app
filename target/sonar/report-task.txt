@@ -1,0 +1,6 @@
+projectKey=com.example:java-web-app
+serverUrl=http://localhost:9000
+serverVersion=24.12.0.100206
+dashboardUrl=http://localhost:9000/dashboard?id=com.example%3Ajava-web-app
+ceTaskId=9636c2f3-cf12-419d-a119-20c4dec3dcca
+ceTaskUrl=http://localhost:9000/api/ce/task?id=9636c2f3-cf12-419d-a119-20c4dec3dcca
